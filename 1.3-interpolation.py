@@ -49,8 +49,21 @@ for i in range(len(x_interpol)):
 	
 plt.plot(x_interpol, y_interpol)
 plt.show()
-	
+
 #	
 # POLYNOMIAL INTERPOLATION	
 #
 # 
+def neville(x_data, y_data, x_interpol):
+	n = len(x_data)
+	poly = n*[0]
+	for i in range(n):
+		for j in range(n-i):
+			if (i==0):
+				poly[j] = y_data[j]
+			else:
+				
+
+	
+
+	  
