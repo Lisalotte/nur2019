@@ -1,42 +1,27 @@
-#
-# Author: Lisa Pothoven
-# Student nr: 1328263
-# Date: 12 Feb 2019
-#
-
+'''
+' Author: Lisa Pothoven
+' Student nr: 1328263
+' Date: 12 Feb 2019
+'''
 from matplotlib import pyplot as plt
 import numpy as np
 
 xx = np.linspace(1,20,7)
-
-def func(x):
-	return 2.0*x*np.sin(0.8*x)
-	
-#plt.plot(xx, func(xx))
-#plt.show()
-
 x_interpol = np.linspace(1,25,100)
 y_interpol = np.zeros(100)
+def func(x):
+	return 2.0*x*np.sin(0.8*x)
 
 #
 # LINEAR INTERPOLATION
 #
-# split(i, x_split)
-# This function splits the given array in two and finds the half where your interpolation value lies.
-# This half if halfed until the two closest values are found.
-#
-'''
-def split(i, x_split):
-	half = int(len(x_split)/2)
-	if (x_interpol[i] > x_split[half]):
-		x_split = x_split[half:]
-	else:
-		x_split = x_split[:half+1]	
-	if (half > 1):
-		x_split = split(i, x_split)
-	return x_split
-'''
 def split(i, x_split, x0, x1):
+	'''
+	split(i, x_split)
+	*This function splits the given array in two and finds the half where 
+	your interpolation value lies.
+	*This half if halfed until the two closest values are found.
+	'''
 	half = int(len(x_split)/2)
 	if (x_interpol[i] > x_split[half]):
 		x_split = x_split[half:]
@@ -55,36 +40,21 @@ def linearInterpol(i, x_split, x0, x1):
 		return (x_interpol[i]-x_split[0])*(y1-y0)/(x_split[1]-x_split[0])+y0
 	else:	
 		return (x_interpol[i]-x_split[0])*(y0-func(xx[x0-1]))/(x_split[0]-xx[x0-1])+y0
-'''		
-y_interpol = []
-x0 = 0
-x1 = len(xx)-1
-for i in range(len(x_interpol)):
-	x_split, x0, x1 = split(i, xx, x0, x1)
-	y_interpol.append(linearInterpol(i, x_split, x0[0], x1[0]))
-	
-#plt.plot(x_interpol, y_interpol)
-#plt.show()
-'''
+
 #	
 # POLYNOMIAL INTERPOLATION	
 #
-# 
-#def neville(x_data, y_data, x_interpol):
-
-# Let P0 be the value of x0, P1 of x1 etc.
-# P01 is the polynomial passing through x0,y0 and x1,y1
-# 
-def polynomial(x, y, M, x_interp):
-	poly = 0
-	for i in range(0,M-1):
-		for j in range(0,M-1):
-			if (i != j):
-				next *= y[j]*(x_interp-x[j])/(x[i]-x[j]) 
-		poly += next
-	return poly
-
 def neville(parents, x, x_interp, M, j_counter):
+	'''
+	Neville's algorithm interpolates between two parent nodes and returns a child node.
+	The resulting polynomial is combined with other children until the final polynomial 
+	of level M is reached.
+
+	Parents: the previous polynomials or y-values for the x-values.
+	Children: array that saves all child nodes for the current polynomial level.
+	x: range of x-values to use for interpolation.
+	M: number of data points used for interpolation.
+	'''
 	children = []
 	j = j_counter
 	for i in range(0,M-1):
@@ -98,6 +68,9 @@ def neville(parents, x, x_interp, M, j_counter):
 	return child
 
 def push(array, value):
+	'''
+	Add a value before the first element of a list.
+	'''
 	array.append(0)
 	i = len(array)
 	while (i>1):
@@ -105,7 +78,7 @@ def push(array, value):
 		i -= 1
 	array[0] = value
 	return array	
-		
+
 interpolated = []
 for i in range(len(x_interpol)):
 	M = int(4)
@@ -130,9 +103,14 @@ for i in range(len(x_interpol)):
 
 	interpolated.append(neville(func(np.array(x_surrounding)), x_surrounding, x_interpol[i], M, 1))
 
+
+plt.subplot(211)
+plt.plot(xx, func(xx))
+plt.xlim(0,25)
+
+plt.subplot(212)
 plt.plot(x_interpol,interpolated)
 plt.show()
-				
 
 	
 
