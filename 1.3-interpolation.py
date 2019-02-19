@@ -79,38 +79,53 @@ def push(array, value):
 	array[0] = value
 	return array	
 
-interpolated = []
-for i in range(len(x_interpol)):
-	M = int(4)
-	x_surrounding = []
+def linear_loop(x_interpol,xx):
+	interpolated = []
 	x_below = 0
 	x_above = len(xx)-1
-	x_split, x_below, x_above = split(i, xx, x_below, x_above)
-	x_surrounding.append(xx[x_below[0][0]])
-	x_surrounding.append(xx[x_above[0][0]])
+	for i in range(len(x_interpol)):
+		x_split, x_below, x_above = split(i, x_interpol, x_below, x_above)
+		interpolated.append(linearInterpol(i, x_split, x_below, x_above))
+	return interpolated
 
-	if (x_below[0][0] > 0):
-		push(x_surrounding,xx[x_below[0][0]-1])
-	else:
-		M -= 1
-	if (x_above[0][0] < len(xx)-1):
-		x_surrounding.append(xx[x_above[0][0]+1])
-	else:
-		M -=1
-	if (x_interpol[i] > xx[-1]):
-		x_surrounding = xx[-2:]
-		M = 2
+def neville_loop(x_interpol,xx):
+	interpolated = []
+	for i in range(len(x_interpol)):
+		M = int(4)
+		x_surrounding = []
+		x_below = 0
+		x_above = len(xx)-1
+		x_split, x_below, x_above = split(i, xx, x_below, x_above)
+		x_surrounding.append(xx[x_below[0][0]])
+		x_surrounding.append(xx[x_above[0][0]])
 
-	interpolated.append(neville(func(np.array(x_surrounding)), x_surrounding, x_interpol[i], M, 1))
+		if (x_below[0][0] > 0):
+			push(x_surrounding,xx[x_below[0][0]-1])
+		else:
+			M -= 1
+		if (x_above[0][0] < len(xx)-1):
+			x_surrounding.append(xx[x_above[0][0]+1])
+		else:
+			M -=1
+		if (x_interpol[i] > xx[-1]):
+			x_surrounding = xx[-2:]
+			M = 2
 
+		interpolated.append(neville(func(np.array(x_surrounding)), x_surrounding, x_interpol[i], M, 1))
+	return interpolated
 
-plt.subplot(211)
+plt.subplot(311)
 plt.plot(xx, func(xx))
 plt.xlim(0,25)
+plt.ylim(-70,30)
 
-plt.subplot(212)
-plt.plot(x_interpol,interpolated)
+plt.subplot(312)
+plt.plot(x_interpol,linear_loop(x_interpol, xx))
+
+plt.subplot(313)
+plt.plot(x_interpol,neville_loop(x_interpol, xx))
 plt.show()
+
 
 	
 
