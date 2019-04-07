@@ -16,17 +16,19 @@ def poissonDis(mean, kaas):
 		return 0
 	k = 0	
 	P = []
-	for k in range(kaas):
-		P.append((mean**k*np.exp(-1.*mean))/np.math.factorial(k))
+	for k in range(kaas+1):
+		P.append((mean**k*np.exp(-1.*mean))/np.math.factorial(k)) #TODO change this self-written routine
 	return P
 
 # Plotting Poisson distributions
 # Values: (1,0), (5,10), (3,20), (2.6,40) (mean, k)
-means = [1.,5.,3.,2.6]
-kaas = [0,10,20,40]
+means = np.array([1.,5.,3.,2.6], np.float64) #TODO: bonus
+kaas = np.array([0,10,20,40], np.int64)
 
 for a in range(len(means)):
-	plt.plot(poissonDis(means[a],kaas[a]))
+	poissonResult = poissonDis(means[a],kaas[a])
+	plt.plot(poissonResult)
+	print(means[a],kaas[a], ": %.5e" %poissonResult[kaas[a]-1])
 
 plt.show()
 
@@ -34,8 +36,9 @@ plt.show()
 
 # Use a combination of an (M)LCG and a 64-bit XOR-shift
 # (M)LCG Multiplicative Linear Congruential Generator
-def MLCG(m, n):
-
+def MLCG(x, a, m):
+	# x should start as 1<=x<=m-1 or low 32-bits
+	return a * x % m
 
 # XOR-shift
 def XORshift(x):
@@ -51,8 +54,13 @@ def XORshift(x):
 
 	return x
 
+
+
 # Test: plot sequential random numbers against each other in a scatter plot for the first 1000 numbers.
 
 # Test: generate 1,000,000 numbers and plot in 20 bins of 0.05 wide.
 
 # Fixed seed (= first output value)
+
+
+
