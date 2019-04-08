@@ -53,6 +53,7 @@ def intoBinary(number):
      
     return "".join(reversed(binarynumber))
 ###############################################
+'''
 def int2float(value):
 # https://stackoverflow.com/questions/20302904/converting-int-to-float-or-float-to-int-using-bitwise-operations-software-float
 	# 0 is 0.0
@@ -97,7 +98,7 @@ def int2float(value):
 	rfloat = (sign | exp | coeff)
 	print(-1*intoBinary(rfloat))
 	return rfloat
-
+'''
 # Use a combination of an (M)LCG and a 64-bit XOR-shift
 # (M)LCG Multiplicative Linear Congruential Generator
 def MLCG(x, a):
@@ -136,14 +137,13 @@ def findNorm(array):
 
 # Fixed seed (= first output value)
 x = np.int64(7)
-x_prev = np.int64(0)
 n = 1000
 xarray = np.empty(n,np.int64)
-xparray = np.empty(n,np.int64)
-
+'''
 for i in range(n):
 	x = MLCG(x, a)
 	x = x + XORshift(x)
+	print(intoBinary(x), x)
 	xarray[i] = x*5.42101086242752217E-20
 
 # Note: I tried to make the RNG return floating point numbers immidiately, but did not succeed.
@@ -156,9 +156,42 @@ plt.xlabel("x_(i+1)")
 plt.ylabel("x_i")
 plt.savefig("MLCG_XOR_n1000.png")
 plt.show()
-
+'''
 # TODO Test: generate 1,000,000 numbers and plot in 20 bins of 0.05 wide.
 
+
+###############
+
+
+# EX 2
+# a
+# Randomly generate three numbers 1.1 < a < 2.5, 0.5 < b < 2 and 1.5 c < 4
+def RNG(n):
+	x1 = np.int64(7)
+	x2 = np.int64(13)
+	xfloat = np.float64()
+	xprev = np.int64(0)
+	xarray = np.empty(n,np.float32)
+	for i in range(n):
+		x1 = MLCG(x1, a)
+		x2 = XORshift(x2)
+		x = x1 + x2
+		xfloat = x/2**64
+		if (xfloat > 1.0):
+			xfloat = xfloat - 1.0
+		elif (xfloat < 0.0):
+			xfloat = xfloat + 1.0
+		xarray[i] = xfloat
+	return xarray
+
+nrs = RNG(30)
+a = 1.1+nrs[12]*1.4
+b = 0.5+nrs[6]*1.5
+c = 1.5+nrs[25]*2.5
+print(a,b,c)
+
+# Write a numerical integrator to solve equation (3) for A 
+# Nsat = 100
 
 
 
