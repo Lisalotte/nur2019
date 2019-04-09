@@ -21,17 +21,14 @@ def poissonDis(mean, kaas):
 	for k in range(kaas+1):
 		P.append((mean**k*np.exp(-1.*mean))/np.math.factorial(k)) #TODO change this self-written routine
 	return P
-
 # Plotting Poisson distributions
 # Values: (1,0), (5,10), (3,20), (2.6,40) (mean, k)
 means = np.array([1.,5.,3.,2.6], np.float64) #TODO: bonus
 kaas = np.array([0,10,20,40], np.int64)
-
 for a in range(len(means)):
 	poissonResult = poissonDis(means[a],kaas[a])
 	plt.plot(poissonResult)
 	print(means[a],kaas[a], ": %.5e" %poissonResult[kaas[a]-1])
-
 #plt.show()
 '''
 # 1b. Random Number Generator that returns a random floating-point number between 0 and 1.
@@ -59,7 +56,6 @@ def int2float(value):
 	# 0 is 0.0
 	if (value == 0):
 		return 0.0
-
 	if (value == 1 << 31): #-2**31
 		return float(-sys.maxsize-1)
 	
@@ -69,7 +65,6 @@ def int2float(value):
 		value = -value
 	print(sign)
 	abs_value_copy = value
-
 	bit_num = 31
 	shift_count = 0
 	print(abs_value_copy, bit_num, (1 << bit_num))
@@ -89,11 +84,9 @@ def int2float(value):
 				abs_value_copy = abs_value_copy << shift_count
 			break
 		bit_num -= 1
-
 	exp = bit_num + 127
 	coeff = abs_value_copy & ~(1<<23)
 	exp <<= 23
-
 	print(intoBinary(sign), intoBinary(exp), intoBinary(coeff))
 	rfloat = (sign | exp | coeff)
 	print(-1*intoBinary(rfloat))
@@ -145,11 +138,9 @@ for i in range(n):
 	x = x + XORshift(x)
 	print(intoBinary(x), x)
 	xarray[i] = x*5.42101086242752217E-20
-
 # Note: I tried to make the RNG return floating point numbers immidiately, but did not succeed.
 xnorm = xarray / findNorm(xarray)
 plt.scatter(xnorm,np.roll(xnorm,1))
-
 # Test: plot sequential random numbers against each other in a scatter plot for the first 1000 numbers.
 plt.title("RNG combined MLCG and XORshift n=1000, x=7")
 plt.xlabel("x_(i+1)")
@@ -191,8 +182,23 @@ c = 1.5+nrs[25]*2.5
 print(a,b,c)
 
 # Write a numerical integrator to solve equation (3) for A 
-# Nsat = 100
+Nsat = 100
+xmin = 0.01
+xmax = 5.
+n = 20
+xran = np.linspace(xmin,xmax,n)
 
+def func(a,b,c,x):
+	return Nsat*(x/b)**(a-3)*np.exp(-(x/b)**c)
 
+def trapez(a,b,c,xran,n):
+	tot = 0
+	for i in range(1,n):
+		tot += (xran[i]-xran[i-1])*(func(a,b,c,xran[i-1])+func(a,b,c,xran[i]))/2.
+		plt.scatter(i,tot) # Check if converges
+	return tot
 
+#plt.plot(xran, func(a,b,c,xran))
 
+integral = trapez(a,b,c,xran,n)
+plt.show()
